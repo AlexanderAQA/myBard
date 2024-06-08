@@ -216,18 +216,18 @@ def get_music(path):
     else:
         return jsonify([])
 #
-# @app.route('/api/song/<path:filename>', methods=['GET'])
-# def get_song(directory, filename):
-#     try:
-#         if not os.path.exists(full_path):
-#             full_path = os.path.join(MUSIC_DIR, filename)
-#             return jsonify({"error": "File not found"}), 404
+@app.route('/api/song/<path:filename>', methods=['GET'])
+def get_song(directory, filename):
+    try:
+        if not os.path.exists(full_path):
+            full_path = os.path.join(MUSIC_DIR, filename)
+            return jsonify({"error": "File not found"}), 404
 
-#         return send_file(full_path)
-#     except Exception as e:
-#         client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
-#         print(f"Error in /api/song/{directory}/{filename} from {client_ip}: {e}")
-#         return jsonify({"error": str(e)}), 500
+        return send_file(full_path)
+    except Exception as e:
+        client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+        print(f"Error in /api/song/{directory}/{filename} from {client_ip}: {e}")
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/static/from_youtube/<path:filename>', methods=['GET'])
 def yt_files(filename):
@@ -293,7 +293,6 @@ def get_random_wave():
             for file in files:
                 if file.endswith('.flac') or file.endswith('.mp3'):
                     music_files.append(os.path.join(root, file))
-        
         if not music_files:
             raise Exception("No songs found in the music directory")
         

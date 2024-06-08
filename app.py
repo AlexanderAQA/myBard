@@ -17,7 +17,6 @@ from pydub import AudioSegment
 from pydub.playback import play
 import urllib.parse
 
-
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://myappuser:mypassword@db:5432/myappdb' 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:111@localhost:5432/postgres'

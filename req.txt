@@ -1,0 +1,16 @@
+Flask
+Flask-Login
+Flask-SQLAlchemy
+Flask-Talisman
+psycopg2-binary
+Flask-Migrate
+Werkzeug
+SQLAlchemy
+flask_bcrypt
+mutagen
+eyed3
+flask_mail
+youtube_dl
+pytube
+pydub
+ffmpeg

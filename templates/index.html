@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="scroll-container">
+        <div class="container">
+            <div class="header">
+                <div class="custom-font">
+                    <h1>Music Player</h1>
+                </div>
+                <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
+            </div>
+            <div class="buttons">
+                <button id="randomButton" class="action-button">Random Song</button>
+                <button id="randomWaveButton" class="action-button">Random Wave</button>
+            </div>
+            <div id="folders" class="folders"></div>
+            <div id="files" class="files"></div>
+            <div id="nowPlaying" class="now-playing"></div>
+            <div class="player-controls">
+                <div class="control-buttons">
+                    <button id="prevButton" class="control-button"><i class="fas fa-backward"></i></button>
+                    <button id="playPauseButton" class="control-button"><i class="fas fa-play"></i></button>
+                    <button id="nextButton" class="control-button"><i class="fas fa-forward"></i></button>
+                    <button id="muteButton" class="control-button"><i class="fas fa-volume-mute"></i></button>
+                </div>
+                <div class="audio-wrapper">
+                    <audio id="audioPlayer"></audio>
+                    <div class="custom-controls">
+                        <div class="current-track">
+                            <span id="trackTitle">Track Title</span>
+                            <span id="trackArtist">Artist</span>
+                        </div>
+                        <input type="range" id="seekBar" value="0" class="seek-bar">
+                        <div class="time-info">
+                            <span id="currentTime" class="time-display">0:00</span>
+                            <span id="duration" class="time-display">0:00</span>
+                        </div>
+                        <input type="range" id="volumeBar" value="1" min="0" max="1" step="0.1" class="volume-bar">
+                    </div>
+                </div>
+            </div>
+            <div id="equalizer" class="equalizer">
+                <div class="eq-control">
+                    <label for="lowGain">Low</label>
+                    <input type="range" id="lowGain" min="-40" max="40" value="0">
+                </div>
+                <div class="eq-control">
+                    <label for="midGain">Mid</label>
+                    <input type="range" id="midGain" min="-40" max="40" value="0">
+                </div>
+                <div class="eq-control">
+                    <label for="highGain">High</label>
+                    <input type="range" id="highGain" min="-40" max="40" value="0">
+                </div>
+                <div>
+                    <button id="resetEQButton" class="reset-button">Reset EQ</button>
+                </div>
+                <h2>Download YouTube Audio</h2>
+                    <form action="/download" method="post">
+                        <label for="youtube_link">YouTube URL:</label>
+                        <input type="text" id="youtube_link" name="youtube_url" required>
+                        <button type="submit">Download</button>
+                    </form>
+
+                    {% if audio_file %}
+                        <h3>Audio Downloaded Successfully!</h3>
+                        <p>Video Title: {{ video_title }}</p>
+                        <p><a href="/api/song/{{ audio_file }}">Download Audio</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/js/script.js"></script>
+</body>
+</html>

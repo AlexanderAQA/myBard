@@ -29,7 +29,7 @@ app.secret_key = 'your_secret_key'
 #MUSIC_DIR = '/app/static/music/'
 #YT_DIR = '/app/static/from_youtube/'
 MUSIC_DIR = 'C:/Users/user/Documents/myBard/static/music'
-YT_DIR = 'C:/Users/user/Documents/myBard/static/from_youtube'
+YT_DIR = 'C:/Users/user/Documents/myBard/static/music/from_youtube'
 
 bcrypt = Bcrypt(app)
 # Configuring Flask-Mail to use Gmail's SMTP server
@@ -161,7 +161,7 @@ def download_audio(youtube_url, output_directory):
 def download():
     try:
         youtube_link = request.form['youtube_url']
-        output_directory = os.path.join(MUSIC_DIR)
+        output_directory = os.path.join(YT_DIR)
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)
         output_path, video_title = download_audio(youtube_link, output_directory)

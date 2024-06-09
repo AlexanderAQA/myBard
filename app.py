@@ -3,6 +3,7 @@ from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 import os
+import yaml
 from models import db, User, Song
 import random
 from mutagen.flac import FLAC
@@ -17,31 +18,29 @@ from pydub import AudioSegment
 from pydub.playback import play
 import urllib.parse
 
-app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://myappuser:mypassword@db:5432/myappdb' 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:111@localhost:5432/postgres'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-#db = SQLAlchemy(app)
-app.secret_key = 'your_secret_key'  
+bard_conf = 'C:/Users/user/Documents/myBard/bard.yml'
+# Load configuration from bard.yml
+with open(bard_conf, 'r') as config_file:
+    config = yaml.safe_load(config_file)
 
-# You need to set a secret key for Flask session management
-# Path to the directory containing the music files
-#MUSIC_DIR = '/app/static/music/'
-#YT_DIR = '/app/static/from_youtube/'
-MUSIC_DIR = 'C:/Users/user/Documents/myBard/static/music'
-YT_DIR = 'C:/Users/user/Documents/myBard/static/music/from_youtube'
+app = Flask(__name__)
+# Set configuration variables
+app.config['SQLALCHEMY_DATABASE_URI'] = config['SQLALCHEMY_DATABASE_URI']
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = config['SQLALCHEMY_TRACK_MODIFICATIONS']
+app.secret_key = config['SECRET_KEY']
+MUSIC_DIR = config['MUSIC_DIR']
+YT_DIR = config['YT_DIR']
 
 bcrypt = Bcrypt(app)
-# Configuring Flask-Mail to use Gmail's SMTP server
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
-# Почта с которой будут отправляться письма
-smtp_mail = 'al.wundt@gmail.com'
+
+# Configuring Flask-Mail
+app.config['MAIL_SERVER'] = config['MAIL_SERVER']
+app.config['MAIL_PORT'] = config['MAIL_PORT']
+app.config['MAIL_USE_TLS'] = config['MAIL_USE_TLS']
+app.config['MAIL_USE_SSL'] = config['MAIL_USE_SSL']
+smtp_mail = config['MAIL_USERNAME']
 app.config['MAIL_USERNAME'] = smtp_mail
-# Здесь должен быть пароль приложения от учетки gmail
-app.config['MAIL_PASSWORD'] = 'lkiq ydce kmlm hxzq'
+app.config['MAIL_PASSWORD'] = config['MAIL_PASSWORD']
 app.config['MAIL_DEFAULT_SENDER'] = smtp_mail
 
 mail = Mail(app)

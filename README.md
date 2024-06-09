@@ -1,9 +1,9 @@
-**myBard**<br>
+## **myBard**<br>
 <br>
 **myBard** is a versatile web application designed to enhance your music listening experience by combining local music streaming with YouTube integration. <br>
 Developed as a pet project by a junior Python automation engineer, myBard supports various audio formats and features user management with PostgreSQL.<br>
 
-**Key Features**<br>
+## **Key Features**<br>
 <br>
 **Local Storage Streaming**<br>
 <br>
@@ -38,4 +38,13 @@ Audio Formats Supported: .flac for high-quality audio and .mp3 for common use.<b
 **Why myBard?**<br>
 <br>
 **myBard** combines the convenience of streaming your local music collection with the ability to listen to tracks from YouTube, all while minimizing bandwidth usage. <br>
-Developed with practical features in mind, myBard is perfect for music enthusiasts looking for a comprehensive and uncensored music streaming solution.
+Developed with practical features in mind, myBard is perfect for music enthusiasts looking for a comprehensive and uncensored music streaming solution.<br>
+<br>
+**What to do in next release - 0.9.0:**<br>
+- Add TTD feature (time to die for every song per user)<br>
+- Add billing plan for every user<br>
+- Add demo plan per 1 IP for ~14 days<br>
+
+## License<br>
+<br>
+This project is licensed under the MIT License - see the **LICENSE** file for details.

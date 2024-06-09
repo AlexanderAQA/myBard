@@ -39,3 +39,8 @@ Audio Formats Supported: .flac for high-quality audio and .mp3 for common use.<b
 <br>
 **myBard** combines the convenience of streaming your local music collection with the ability to listen to tracks from YouTube, all while minimizing bandwidth usage. <br>
 Developed with practical features in mind, myBard is perfect for music enthusiasts looking for a comprehensive and uncensored music streaming solution.
+<br>
+**What to do in next release - 0.9.0:**<br>
+- Add TTD feature (time to die for every song per user)<br>
+- Add billing plan for every user<br>
+- Add demo plan per 1 IP for ~14 days<br>

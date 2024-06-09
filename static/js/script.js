@@ -87,30 +87,35 @@ document.addEventListener('DOMContentLoaded', function() {
     function fetchFiles(path = '') {
         const apiPath = path ? `/api/music/${encodeURIComponent(path)}` : '/api/music';
         return fetch(apiPath)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
                 if (!data || typeof data !== 'object') {
                     console.error('Invalid data format:', data);
                     return [];
                 }
-
+    
                 if (Array.isArray(data)) {
                     const promises = data.map(folder => fetchFiles(path ? `${path}/${folder}` : folder));
                     return Promise.all(promises).then(results => results.flat());
                 }
-
+    
                 const { directories = [], files = [] } = data;
                 const filePromises = directories.map(directory => {
                     const directoryPath = path ? `${path}/${directory}` : directory;
                     return fetchFiles(directoryPath);
                 });
-
-                const flacFiles = files.filter(file => file.endsWith('.flac')).map(file => ({
+    
+                const audioFiles = files.filter(file => file.endsWith('.flac') || file.endsWith('.mp3')).map(file => ({
                     path: path ? `${path}/${file}` : file,
-                    duration: Math.floor(Math.random() * 300 + 180)
+                    duration: Math.floor(Math.random() * 300 + 180)  // Simulated duration
                 }));
-
-                return Promise.all(filePromises).then(nestedFiles => flacFiles.concat(...nestedFiles));
+    
+                return Promise.all(filePromises).then(nestedFiles => audioFiles.concat(...nestedFiles));
             })
             .catch(error => {
                 console.error('Error fetching files:', error);
@@ -120,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     randomWaveButton.addEventListener('click', function() {
         if (!audioContext) {
-            audioContext = new (window.AudioContext || window.AudioContext)();
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
             setupEqualizer();
         } else if (audioContext.state === 'suspended') {
             audioContext.resume();
@@ -139,7 +144,12 @@ document.addEventListener('DOMContentLoaded', function() {
     function loadFolders(path = '') {
         const apiPath = path ? `/api/music/${encodeURIComponent(path)}` : '/api/music';
         fetch(apiPath)
-            .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
             .then(data => {
                 if (!data || typeof data !== 'object') {
                     console.error('Invalid data format:', data);
@@ -199,16 +209,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     randomButton.onclick = () => {
         if (!audioContext) {
-            audioContext = new (window.AudioContext || window.AudioContext)();
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
             setupEqualizer();
         } else if (audioContext.state === 'suspended') {
             audioContext.resume();
         }
 
         fetch('/api/random')
-            .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
             .then(data => {
                 const filePath = data.file;
+                if (!filePath) {
+                    console.error('No file path returned');
+                    return;
+                }
                 audioPlayer.src = `/api/song/${encodeURIComponent(filePath)}`;
                 audioPlayer.play();
                 nowPlayingDiv.textContent = `Now Playing: ${filePath.split('/').pop()}`;
@@ -252,7 +271,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const gainValues = [lowGainSlider, midGainSlider, highGainSlider];
 
         // Create the audio context and connect nodes
-        audioContext = new (window.AudioContext);
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.AudioContext)();
+        }
         const source = audioContext.createMediaElementSource(audioPlayer);
 
         lowGainNode = audioContext.createBiquadFilter();
@@ -339,6 +360,15 @@ document.addEventListener('DOMContentLoaded', function() {
         seconds = Math.floor(seconds % 60);
         return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     }
+    // Attach event listeners to start/resume the audio context
+    document.body.addEventListener('click', () => {
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            setupEqualizer();
+        } else if (audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
+    });
 
     loadFolders();
 });

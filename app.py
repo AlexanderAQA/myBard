@@ -17,7 +17,6 @@ from pydub import AudioSegment
 from pydub.playback import play
 import urllib.parse
 
-
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://myappuser:mypassword@db:5432/myappdb' 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:111@localhost:5432/postgres'
@@ -30,7 +29,7 @@ app.secret_key = 'your_secret_key'
 #MUSIC_DIR = '/app/static/music/'
 #YT_DIR = '/app/static/from_youtube/'
 MUSIC_DIR = 'C:/Users/user/Documents/myBard/static/music'
-YT_DIR = 'C:/Users/user/Documents/myBard/static/from_youtube'
+YT_DIR = 'C:/Users/user/Documents/myBard/static/music/from_youtube'
 
 bcrypt = Bcrypt(app)
 # Configuring Flask-Mail to use Gmail's SMTP server
@@ -162,7 +161,7 @@ def download_audio(youtube_url, output_directory):
 def download():
     try:
         youtube_link = request.form['youtube_url']
-        output_directory = os.path.join(MUSIC_DIR)
+        output_directory = os.path.join(YT_DIR)
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)
         output_path, video_title = download_audio(youtube_link, output_directory)
@@ -215,19 +214,20 @@ def get_music(path):
         files = [f for f in os.listdir(full_path) if os.path.isfile(os.path.join(full_path, f)) and (f.endswith('.flac') or f.endswith('.mp3'))]
         return jsonify({"directories": directories, "files": files})
     else:
-        return jsonify([])
+        return jsonify({"error": "Not a directory"}), 400
+
 #
-@app.route('/api/song/<path:filename>', methods=['GET'])
-def get_song(directory, filename):
+@app.route('/api/song/<path:path>')
+def get_song(path):
     try:
         if not os.path.exists(full_path):
-            full_path = os.path.join(MUSIC_DIR, filename)
+            full_path = os.path.join(MUSIC_DIR, path)
             return jsonify({"error": "File not found"}), 404
 
         return send_file(full_path)
     except Exception as e:
         client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
-        print(f"Error in /api/song/{directory}/{filename} from {client_ip}: {e}")
+        print(f"Error in /api/song/{full_path}/{path} from {client_ip}: {e}")
         return jsonify({"error": str(e)}), 500
 
 @app.route('/static/from_youtube/<path:filename>', methods=['GET'])
@@ -268,14 +268,16 @@ def get_random_song(MUSIC_DIR):
 # Случайная песня
 @app.route('/api/random', methods=['GET'])
 def random_song_endpoint():
-    try:
-        random_song = get_random_song(MUSIC_DIR)
-        if random_song:
-            return jsonify({"file": random_song}), 200
-        else:
-            return jsonify({"error": "No .flac files found"}), 404
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    files = []
+    for root, dirs, filenames in os.walk(MUSIC_DIR):
+        for f in filenames:
+            if f.endswith('.flac') or f.endswith('.mp3'):
+                files.append(os.path.join(root, f))
+    if not files:
+        return jsonify({"file": None})
+    random_file = random.choice(files)
+    return jsonify({"file": os.path.relpath(random_file, MUSIC_DIR)})
+
 
 # Возвращает на запрос случайную песню
 @app.route('/api/song/<path:filename>', methods=['GET'])
@@ -294,7 +296,6 @@ def get_random_wave():
             for file in files:
                 if file.endswith('.flac') or file.endswith('.mp3'):
                     music_files.append(os.path.join(root, file))
-        
         if not music_files:
             raise Exception("No songs found in the music directory")
         

@@ -1,0 +1,24 @@
+# Config file for myBard
+
+# PostgreSQL database configuration
+SQLALCHEMY_DATABASE_URI: 'postgresql://postgres:password@localhost:5432/postgres'
+SQLALCHEMY_TRACK_MODIFICATIONS: False
+SECRET_KEY: 'your_secret_key'  
+
+# Path to the directory containing the music files
+MUSIC_DIR = '/app/static/music/'
+YT_DIR = '/app/static/from_youtube/'
+
+# Configuring Flask-Mail to use Gmail's SMTP server
+MAIL_SERVER: 'smtp.gmail.com'
+MAIL_PORT: 587
+MAIL_USE_TLS: True
+MAIL_USE_SSL: False
+
+# Почта с которой будут отправляться письма
+smtp_mail: 'your_mail@gmail.com'
+MAIL_USERNAME: smtp_mail
+
+# Здесь должен быть пароль приложения от учетки gmail
+MAIL_PASSWORD: 'your_app_password'
+MAIL_DEFAULT_SENDER: smtp_mail

@@ -87,35 +87,35 @@ document.addEventListener('DOMContentLoaded', function() {
     function fetchFiles(path = '') {
         const apiPath = path ? `/api/music/${encodeURIComponent(path)}` : '/api/music';
         return fetch(apiPath)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
                 if (!data || typeof data !== 'object') {
                     console.error('Invalid data format:', data);
                     return [];
                 }
-
+    
                 if (Array.isArray(data)) {
                     const promises = data.map(folder => fetchFiles(path ? `${path}/${folder}` : folder));
                     return Promise.all(promises).then(results => results.flat());
                 }
-
+    
                 const { directories = [], files = [] } = data;
                 const filePromises = directories.map(directory => {
                     const directoryPath = path ? `${path}/${directory}` : directory;
                     return fetchFiles(directoryPath);
                 });
-
-                const flacFiles = files.filter(file => file.endsWith('.flac')).map(file => ({
+    
+                const audioFiles = files.filter(file => file.endsWith('.flac') || file.endsWith('.mp3')).map(file => ({
                     path: path ? `${path}/${file}` : file,
-                    duration: Math.floor(Math.random() * 300 + 180)
+                    duration: Math.floor(Math.random() * 300 + 180)  // Simulated duration
                 }));
-
-                return Promise.all(filePromises).then(nestedFiles => flacFiles.concat(...nestedFiles));
+    
+                return Promise.all(filePromises).then(nestedFiles => audioFiles.concat(...nestedFiles));
             })
             .catch(error => {
                 console.error('Error fetching files:', error);

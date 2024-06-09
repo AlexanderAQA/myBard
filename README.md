@@ -30,7 +30,7 @@ Rediscover old favorites and explore new tracks effortlessly.<br>
 <br>
 **Technical Detail**s<br>
 <br>
-Backend: Python, Flask, SQLAlchemy, yaml, bash (shell)<br>
+Backend: Python, Flask, SQLAlchemy, Docker, yaml, bash (shell)<br>
 Database: PostgreSQL<br>
 Frontend: JS, HTML, CSS<br>
 Audio Formats Supported: .flac for high-quality audio and .mp3 for common use.<br>

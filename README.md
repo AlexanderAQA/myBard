@@ -1,6 +1,6 @@
-## **myBard**<br>
+## myBard<br>
 <br>
-**myBard** is a versatile web application designed to enhance your music listening experience by combining local music streaming with YouTube integration. <br>
+*myBard* is a versatile web application designed to enhance your music listening experience by combining local music streaming with YouTube integration. <br>
 Developed as a pet project by a junior Python automation engineer, myBard supports various audio formats and features user management with PostgreSQL.<br>
 
 ## **Key Features**<br>
